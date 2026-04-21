@@ -9,7 +9,7 @@ from datetime import datetime
 # =========================
 path = 'images'
 attendance_file = 'attendance.csv'
-
+# Keep the image name as same as of the person's name
 images = []
 classNames = []
 
