@@ -11,6 +11,7 @@ openpyxl==3.1.5
 packaging==26.1
 pandas==3.0.2
 pillow==12.2.0
+pygame==2.6.1
 python-dateutil==2.9.0.post0
 setuptools==68.2.2
 six==1.17.0
