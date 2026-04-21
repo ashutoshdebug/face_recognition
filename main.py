@@ -3,15 +3,34 @@ import face_recognition
 import os
 import pandas as pd
 from datetime import datetime
+import pygame
 
 # =========================
 # CONFIG
 # =========================
 path = 'images'
 attendance_file = 'attendance.csv'
-# Keep the image name as same as of the person's name
+sound_file = 'fahhhhh.mp3'   # <-- put your custom sound file here (mp3/wav)
+
+# Keep the image name same as the person's name
 images = []
 classNames = []
+
+# =========================
+# INIT PYGAME MIXER
+# =========================
+pygame.mixer.init()
+
+# Load custom sound once at startup
+present_sound = None
+try:
+    if os.path.exists(sound_file):
+        present_sound = pygame.mixer.Sound(sound_file)
+        print(f"[INFO] Custom sound loaded: {sound_file}")
+    else:
+        print(f"[WARNING] Sound file not found: {sound_file}")
+except Exception as e:
+    print(f"[WARNING] Could not load sound file: {e}")
 
 # =========================
 # LOAD IMAGES
@@ -104,6 +123,18 @@ def prepare_today_sheet():
 
     save_attendance(df)
 
+def play_present_sound():
+    """
+    Play custom sound when attendance is marked present.
+    """
+    try:
+        if present_sound is not None:
+            present_sound.play()
+        else:
+            print("[WARNING] Custom sound not loaded.")
+    except Exception as e:
+        print(f"[WARNING] Could not play sound: {e}")
+
 def markAttendance(name):
     """
     Mark a student present only once per day.
@@ -125,6 +156,7 @@ def markAttendance(name):
             df.at[row_index, "Attendance"] = "Present"
             df.at[row_index, "Time"] = current_time
             print(f"[ATTENDANCE] {name} marked Present at {current_time}")
+            play_present_sound()
         else:
             # Already present today -> ignore repeated detection
             pass
@@ -138,6 +170,7 @@ def markAttendance(name):
         }])
         df = pd.concat([df, new_row], ignore_index=True)
         print(f"[ATTENDANCE] {name} marked Present at {current_time}")
+        play_present_sound()
 
     save_attendance(df)
 
@@ -197,3 +230,4 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
+pygame.quit()
