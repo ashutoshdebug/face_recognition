@@ -2,3 +2,5 @@
 venv
 env
 myenv
+images/*
+attendance.csv
